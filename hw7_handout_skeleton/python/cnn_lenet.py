@@ -298,7 +298,6 @@ def conv_layer_forward(input, layer, param):
   output['batch_size'] = batch_size
   output['data'] = np.zeros((h_out * w_out * num, batch_size))
 
-  # TODO: implement your convolution forward pass here
   input_n = {
     'height': h_in,
     'width': w_in,
