@@ -672,6 +672,7 @@ def mlrloss(wb, X, y, K, prediction):
   return nll, g, od, percent
 
 
+
 def sgd_momentum(w_rate, b_rate, mu, decay, params, param_winc, param_grad):
   """Update the parameters with sgd with momentum
 
@@ -688,14 +689,17 @@ def sgd_momentum(w_rate, b_rate, mu, decay, params, param_winc, param_grad):
     params_: updated parameters
     param_winc_: gradient buffer of previous step
   """
-
   params_ = copy.deepcopy(params)
   param_winc_ = copy.deepcopy(param_winc)
 
-  for i in range(1, len(params)+1):
-    param_winc_[i]['w'] = mu*param_winc_[i]['w'] + w_rate*(param_grad[i]['w'] + decay*params_[i]['w'])
-    params_[i]['w'] -= param_winc_[i]['w']
-    param_winc_[i]['b'] = mu*param_winc_[i]['b'] + b_rate*param_grad[i]['b']
-    params_[i]['b'] -= param_winc_[i]['b']
+  for layerNumber in param_winc_:
+    
+    param_winc_[layerNumber]['w'] = (mu * param_winc_[layerNumber]['w']) + (w_rate * (param_grad[layerNumber]['w']  + (decay * params[layerNumber]['w'])))
+    param_winc_[layerNumber]['b'] = (mu * param_winc_[layerNumber]['b']) + (b_rate * param_grad[layerNumber]['b'])
+    
+    params_[layerNumber]['w'] = params_[layerNumber]['w'] - param_winc_[layerNumber]['w']
+    params_[layerNumber]['b'] = params_[layerNumber]['b'] - param_winc_[layerNumber]['b']
 
+  assert len(params_) == len(param_grad), 'params_ does not have the right length'
+  assert len(param_winc_) == len(param_grad), 'param_winc_ does not have the right length'
   return params_, param_winc_
