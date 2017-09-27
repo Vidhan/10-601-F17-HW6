@@ -512,7 +512,6 @@ def relu_forward(input, layer):
 
   # TODO: implement your relu forward pass here
   output['data'] = np.maximum(np.zeros(input['data'].shape), input['data'])
-  
   assert np.all(output['data'].shape == input['data'].shape), 'output[\'data\'] has incorrect shape!'
   return output
 
@@ -533,6 +532,7 @@ def relu_backward(output, input, layer):
   # TODO: implement your relu backward pass here
   idx = np.where(input['data'] > 0)
   input_od[idx] = output['diff'][idx]
+  assert np.all(input['data'].shape == input_od.shape), 'input_od has incorrect shape!'
 
   return input_od
 
