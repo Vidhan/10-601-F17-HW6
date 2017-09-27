@@ -298,6 +298,7 @@ def conv_layer_forward(input, layer, param):
   output['batch_size'] = batch_size
   output['data'] = np.zeros((h_out * w_out * num, batch_size))
 
+  # TODO: implement your convolution forward pass here
   input_n = {
     'height': h_in,
     'width': w_in,
@@ -372,6 +373,7 @@ def conv_layer_backward(output, input, layer, param):
   param_grad['b'] = np.zeros(param['b'].shape)
   param_grad['w'] = np.zeros(param['w'].shape)
 
+  # TODO: implement convolution backward pass here
   input_n = {
     'height': h_in,
     'width': w_in,
@@ -422,14 +424,13 @@ def pooling_layer_forward(input, layer):
   output['channel'] = c
   output['batch_size'] = batch_size
   output['data'] = np.zeros((h_out * w_out * c, batch_size))
-
+  
   # TODO: implement your pooling forward here
   # implementation begins
 
   # implementation ends
-  
+    
   assert np.all(output['data'].shape == (h_out * w_out * c, batch_size)), 'output[\'data\'] has incorrect shape!'
-
   return output
 
 
@@ -452,6 +453,7 @@ def pooling_layer_backward(output, input, layer):
 
   input_od = np.zeros(input['data'].shape)
 
+  # TODO: implement backward pass here
   input_i = {
     'height': input['height'],
     'width': input['width'],
@@ -478,6 +480,7 @@ def pooling_layer_backward(output, input, layer):
     im = col2im_conv(col_diff, input, layer, h_out, w_out)
     input_od[:, i] = im.flatten()
   assert np.all(input['data'].shape == input_od.shape), 'input_od has incorrect shape!'
+
   return input_od
 
 
@@ -502,9 +505,8 @@ def relu_forward(input, layer):
   # implementation begins
 
   # implementation ends
-
+  
   assert np.all(output['data'].shape == input['data'].shape), 'output[\'data\'] has incorrect shape!'
-
   return output
 
 
@@ -521,9 +523,11 @@ def relu_backward(output, input, layer):
   """
   input_od = np.zeros(input['data'].shape)
 
+  # TODO: implement your relu backward pass here
   idx = np.where(input['data'] > 0)
   input_od[idx] = output['diff'][idx]
   assert np.all(input['data'].shape == input_od.shape), 'input_od has incorrect shape!'
+
   return input_od
 
 
@@ -552,9 +556,9 @@ def inner_product_forward(input, layer, param):
   # implementation begins
 
   # implementation ends
-
+  
   assert np.all(output['data'].shape == (num, batch_size)), 'output[\'data\'] has incorrect shape!'
-
+  
   return output
 
 
@@ -576,6 +580,7 @@ def inner_product_backward(output, input, layer, param):
   param_grad['w'] = np.zeros(param['w'].shape)
   input_od = np.zeros(input['data'].shape)
 
+  # TODO: implement your inner product backward pass here
   param_grad['w'] = input['data'].dot(output['diff'].T)
   param_grad['b'] = np.sum(output['diff'], axis=1)
 
@@ -631,6 +636,7 @@ def mlrloss(wb, X, y, K, prediction):
 
   nll = 0
   od = np.zeros(prob.shape)
+  # TODO: calculate negative log likelihood, percent accuracy, and gradient
   nll = -np.sum(np.log(prob[y, np.arange(batch_size)]))
 
   if prediction == 1:
@@ -652,6 +658,7 @@ def mlrloss(wb, X, y, K, prediction):
   return nll, g, od, percent
 
 
+
 def sgd_momentum(w_rate, b_rate, mu, decay, params, param_winc, param_grad):
   """Update the parameters with sgd with momentum
 
@@ -668,14 +675,17 @@ def sgd_momentum(w_rate, b_rate, mu, decay, params, param_winc, param_grad):
     params_: updated parameters
     param_winc_: gradient buffer of previous step
   """
-
   params_ = copy.deepcopy(params)
   param_winc_ = copy.deepcopy(param_winc)
 
-  for i in range(1, len(params)+1):
-    param_winc_[i]['w'] = mu*param_winc_[i]['w'] + w_rate*(param_grad[i]['w'] + decay*params_[i]['w'])
-    params_[i]['w'] -= param_winc_[i]['w']
-    param_winc_[i]['b'] = mu*param_winc_[i]['b'] + b_rate*param_grad[i]['b']
-    params_[i]['b'] -= param_winc_[i]['b']
+  for layerNumber in param_winc_:
+    
+    param_winc_[layerNumber]['w'] = (mu * param_winc_[layerNumber]['w']) + (w_rate * (param_grad[layerNumber]['w']  + (decay * params[layerNumber]['w'])))
+    param_winc_[layerNumber]['b'] = (mu * param_winc_[layerNumber]['b']) + (b_rate * param_grad[layerNumber]['b'])
+    
+    params_[layerNumber]['w'] = params_[layerNumber]['w'] - param_winc_[layerNumber]['w']
+    params_[layerNumber]['b'] = params_[layerNumber]['b'] - param_winc_[layerNumber]['b']
 
+  assert len(params_) == len(param_grad), 'params_ does not have the right length'
+  assert len(param_winc_) == len(param_grad), 'param_winc_ does not have the right length'
   return params_, param_winc_
