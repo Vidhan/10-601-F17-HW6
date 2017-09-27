@@ -477,7 +477,7 @@ def pooling_layer_backward(output, input, layer):
 
     im = col2im_conv(col_diff, input, layer, h_out, w_out)
     input_od[:, i] = im.flatten()
-
+  assert np.all(input['data'].shape == input_od.shape), 'input_od has incorrect shape!'
   return input_od
 
 
