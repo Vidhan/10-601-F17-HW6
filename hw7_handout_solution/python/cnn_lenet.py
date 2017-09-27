@@ -439,7 +439,8 @@ def pooling_layer_forward(input, layer):
     tmp = np.max(col, axis=0)
     tmp = np.reshape(tmp.T, (h_out, w_out, c))
     output['data'][:, i] = tmp.flatten()
-
+    
+  assert np.all(output['data'].shape == (h_out * w_out * c, batch_size)), 'output[\'data\'] has incorrect shape!'
   return output
 
 
@@ -511,7 +512,8 @@ def relu_forward(input, layer):
 
   # TODO: implement your relu forward pass here
   output['data'] = np.maximum(np.zeros(input['data'].shape), input['data'])
-
+  
+  assert np.all(output['data'].shape == input['data'].shape), 'output[\'data\'] has incorrect shape!'
   return output
 
 
@@ -569,6 +571,7 @@ def inner_product_forward(input, layer, param):
     output['data'][:, n] = inner_product[:,0]
   
   assert np.all(output['data'].shape == (num, batch_size)), 'output[\'data\'] has incorrect shape!'
+  
   return output
 
 
