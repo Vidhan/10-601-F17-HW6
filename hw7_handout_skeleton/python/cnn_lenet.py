@@ -372,8 +372,7 @@ def conv_layer_backward(output, input, layer, param):
   param_grad = {}
   param_grad['b'] = np.zeros(param['b'].shape)
   param_grad['w'] = np.zeros(param['w'].shape)
-
-  # TODO: implement convolution backward pass here
+  
   input_n = {
     'height': h_in,
     'width': w_in,
@@ -453,7 +452,6 @@ def pooling_layer_backward(output, input, layer):
 
   input_od = np.zeros(input['data'].shape)
 
-  # TODO: implement backward pass here
   input_i = {
     'height': input['height'],
     'width': input['width'],
@@ -523,7 +521,6 @@ def relu_backward(output, input, layer):
   """
   input_od = np.zeros(input['data'].shape)
 
-  # TODO: implement your relu backward pass here
   idx = np.where(input['data'] > 0)
   input_od[idx] = output['diff'][idx]
   assert np.all(input['data'].shape == input_od.shape), 'input_od has incorrect shape!'
@@ -580,7 +577,6 @@ def inner_product_backward(output, input, layer, param):
   param_grad['w'] = np.zeros(param['w'].shape)
   input_od = np.zeros(input['data'].shape)
 
-  # TODO: implement your inner product backward pass here
   param_grad['w'] = input['data'].dot(output['diff'].T)
   param_grad['b'] = np.sum(output['diff'], axis=1)
 
@@ -636,7 +632,6 @@ def mlrloss(wb, X, y, K, prediction):
 
   nll = 0
   od = np.zeros(prob.shape)
-  # TODO: calculate negative log likelihood, percent accuracy, and gradient
   nll = -np.sum(np.log(prob[y, np.arange(batch_size)]))
 
   if prediction == 1:
