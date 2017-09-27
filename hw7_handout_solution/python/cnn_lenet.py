@@ -557,10 +557,18 @@ def inner_product_forward(input, layer, param):
   output['data'] = np.zeros((num, batch_size))
 
   # TODO: implement your inner product forward pass here
-  b = np.tile(param['b'].reshape(param['b'].size, 1), (1, input['data'].shape[1]))
-  output['data'] = input['data'].T.dot(param['w']) + b.T
-  output['data'] = output['data'].T
+  w = param['w']
+  b = param['b']
+  b = np.reshape(b, (len(b), 1))
+  data = input['data']
 
+  for n in range (0, batch_size):
+    x = data[:,n]
+    x = np.reshape(w, (len(x), 1))
+    inner_product = w.T.dot(x) + b
+    output['data'][:, n] = inner_product[:,0]
+  
+  assert np.all(output['data'].shape == (num, batch_size)), 'output[\'data\'] has incorrect shape!'
   return output
 
 
