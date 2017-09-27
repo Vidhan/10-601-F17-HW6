@@ -598,6 +598,9 @@ def inner_product_backward(output, input, layer, param):
   param_grad['b'] = np.sum(output['diff'], axis=1)
 
   input_od = param['w'].dot(output['diff'])
+  assert np.all(input['data'].shape == input_od.shape), 'input_od has incorrect shape!'
+  assert np.all(param_grad['w'].shape == param['w'].shape), 'w has incorrect shape!'
+  assert np.all(param_grad['b'].shape == param['b'].shape), 'b has incorrect shape!'
 
   return param_grad, input_od
 
