@@ -71,12 +71,16 @@ def get_lenet():
 
 def main():
   # define lenet
+  print("Initializing Layers...")
   layers = get_lenet()
+  print("Initilization Complete!")
 
   # load data
   # change the following value to true to load the entire dataset
   fullset = False
+  print("Loading MNIST Dataset...")
   xtrain, ytrain, xval, yval, xtest, ytest = cnn_lenet.load_mnist(fullset)
+  print("MNIST Dataset Loading Complete!")
 
   xtrain = np.hstack([xtrain, xval])
   ytrain = np.hstack([ytrain, yval])
@@ -135,14 +139,14 @@ def main():
 
     # display training loss
     if (step+1) % display_interval == 0:
-      print 'cost = %f training_percent = %f' % (cp['cost'], cp['percent'])
+      print 'cost = %f training_accuracy = %f' % (cp['cost'], cp['percent']) + ' current_step = ' + str(step + 1)
 
     # display test accuracy
     if (step+1) % test_interval == 0:
       layers[1]['batch_size'] = xtest.shape[1]
       cptest, _ = cnn_lenet.conv_net(params, layers, xtest, ytest)
       layers[1]['batch_size'] = 64
-      print '\ntest accuracy: %f\n' % (cptest['percent'])
+      print '\ncost = %f test_accuracy = %f' % (cptest['cost'], cptest['percent']) + ' current_step = ' + str(step + 1) + '\n'
 
     # save params peridocally to recover from any crashes
     if (step+1) % snapshot == 0:
