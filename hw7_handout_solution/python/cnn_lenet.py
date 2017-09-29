@@ -56,12 +56,9 @@ def load_mnist(fullset=True):
   # create smaller set for testing purposes
   if not fullset:
     m_train_small = m_train/20
-    m_test_small = m_test/20
     m_validate_small = m_validate/20
     xtrain = xtrain[:, 0:m_train_small]
     ytrain = ytrain[0:m_train_small]
-    xtest = xtest[:, 0:m_test_small]
-    ytest = ytest[0:m_test_small]
     xvalidate = xvalidate[:, 0:m_validate_small]
     yvalidate = yvalidate[0:m_validate_small]
 
