@@ -71,10 +71,8 @@ def get_lenet():
 
 def main():
   # define lenet
-  print("Initializing Layers...")
   layers = get_lenet()
-  print("Initilization Complete!")
-
+  
   # load data
   # change the following value to true to load the entire dataset
   fullset = False
@@ -102,9 +100,13 @@ def main():
   max_iter = 10000
 
   # initialize parameters
+  print("Initializing Parameters...")
   params = cnn_lenet.init_convnet(layers)
   param_winc = copy.deepcopy(params)
-
+  print("Initilization Complete!")
+  
+  print("Training Started. Printing report on training data every " + str(display_interval) + " steps.")
+  print("Printing report on test data every " + str(test_interval) + " steps.")
   for l_idx in range(1, len(layers)):
     param_winc[l_idx]['w'] = np.zeros(param_winc[l_idx]['w'].shape)
     param_winc[l_idx]['b'] = np.zeros(param_winc[l_idx]['b'].shape)
