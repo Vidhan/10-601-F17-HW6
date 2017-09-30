@@ -126,7 +126,7 @@ def main():
     [cp, param_grad] = cnn_lenet.conv_net(params,
                                           layers,
                                           xtrain[:, idx],
-                                          ytrain[idx])
+                                          ytrain[idx], True)
 
     # we have different epsilons for w and b
     w_rate = cnn_lenet.get_lr(step, epsilon*w_lr, gamma, power)
@@ -146,7 +146,7 @@ def main():
     # display test accuracy
     if (step+1) % test_interval == 0:
       layers[1]['batch_size'] = xtest.shape[1]
-      cptest, _ = cnn_lenet.conv_net(params, layers, xtest, ytest)
+      cptest, _ = cnn_lenet.conv_net(params, layers, xtest, ytest, False)
       layers[1]['batch_size'] = 64
       print '\ncost = %f test_accuracy = %f' % (cptest['cost'], cptest['percent']) + ' current_step = ' + str(step + 1) + '\n'
 
