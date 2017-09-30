@@ -105,8 +105,6 @@ def main():
   param_winc = copy.deepcopy(params)
   print("Initilization Complete!")
   
-  print("Training Started. Printing report on training data every " + str(display_interval) + " steps.")
-  print("Printing report on test data every " + str(test_interval) + " steps.")
   for l_idx in range(1, len(layers)):
     param_winc[l_idx]['w'] = np.zeros(param_winc[l_idx]['w'].shape)
     param_winc[l_idx]['b'] = np.zeros(param_winc[l_idx]['b'].shape)
@@ -114,6 +112,9 @@ def main():
   # learning iterations
   indices = range(m_train)
   random.shuffle(indices)
+  
+  print("Training Started. Printing report on training data every " + str(display_interval) + " steps.")
+  print("Printing report on test data every " + str(test_interval) + " steps.")
   for step in range(max_iter):
     # get mini-batch and setup the cnn with the mini-batch
     start_idx = step * batch_size % m_train
