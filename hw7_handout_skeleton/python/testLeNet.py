@@ -94,7 +94,7 @@ def main():
   w_lr = 1
   b_lr = 2
 
-  test_interval = 500
+  test_interval = 100
   display_interval = 100
   snapshot = 5000
   max_iter = 10000
