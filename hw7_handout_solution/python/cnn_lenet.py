@@ -134,7 +134,7 @@ def init_convnet(layers):
   return params
 
 
-def conv_net(params, layers, data, labels):
+def conv_net(params, layers, data, labels, doBackProp):
   """
 
   Args:
@@ -190,37 +190,38 @@ def conv_net(params, layers, data, labels):
   cp['cost'] = cost/batch_size
   cp['percent'] = percent
 
-  # range: [l-1, 2]
-  for i in range(l-1,1,-1):
-    param_grad[i-1] = {}
+  if doBackProp:
+    # range: [l-1, 2]
+    for i in range(l-1,1,-1):
+      param_grad[i-1] = {}
 
-    if layers[i]['type'] == 'CONV':
-      output[i]['diff'] = input_od
-      param_grad[i-1], input_od = conv_layer_backward(output[i],
+      if layers[i]['type'] == 'CONV':
+        output[i]['diff'] = input_od
+        param_grad[i-1], input_od = conv_layer_backward(output[i],
                                                       output[i-1],
                                                       layers[i],
                                                       params[i-1])
-    elif layers[i]['type'] == 'POOLING':
-      output[i]['diff'] = input_od
-      input_od = pooling_layer_backward(output[i],
+      elif layers[i]['type'] == 'POOLING':
+        output[i]['diff'] = input_od
+        input_od = pooling_layer_backward(output[i],
                                         output[i-1],
                                         layers[i])
-      param_grad[i-1]['w'] = np.array([])
-      param_grad[i-1]['b'] = np.array([])
-    elif layers[i]['type'] == 'IP':
-      output[i]['diff'] = input_od
-      param_grad[i-1], input_od = inner_product_backward(output[i],
+        param_grad[i-1]['w'] = np.array([])
+        param_grad[i-1]['b'] = np.array([])
+      elif layers[i]['type'] == 'IP':
+        output[i]['diff'] = input_od
+        param_grad[i-1], input_od = inner_product_backward(output[i],
                                                          output[i-1],
                                                          layers[i],
                                                          params[i-1])
-    elif layers[i]['type'] == 'RELU':
-      output[i]['diff'] = input_od
-      input_od = relu_backward(output[i], output[i-1], layers[i])
-      param_grad[i-1]['w'] = np.array([])
-      param_grad[i-1]['b'] = np.array([])
+      elif layers[i]['type'] == 'RELU':
+        output[i]['diff'] = input_od
+        input_od = relu_backward(output[i], output[i-1], layers[i])
+        param_grad[i-1]['w'] = np.array([])
+        param_grad[i-1]['b'] = np.array([])
 
-    param_grad[i-1]['w'] = param_grad[i-1]['w'] / batch_size
-    param_grad[i-1]['b'] = param_grad[i-1]['b'] / batch_size
+      param_grad[i-1]['w'] = param_grad[i-1]['w'] / batch_size
+      param_grad[i-1]['b'] = param_grad[i-1]['b'] / batch_size
 
   return cp, param_grad
 
