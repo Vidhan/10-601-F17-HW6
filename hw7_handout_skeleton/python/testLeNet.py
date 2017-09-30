@@ -72,7 +72,6 @@ def get_lenet():
 def main():
   # define lenet
   layers = get_lenet()
-  
 
   # load data
   # change the following value to true to load the entire dataset
@@ -106,8 +105,6 @@ def main():
   param_winc = copy.deepcopy(params)
   print("Initilization Complete!")
 
-  print("Training Started. Printing report on training data every " + str(display_interval) + " steps.")
-  print("Printing report on test data every " + str(test_interval) + " steps.")
   for l_idx in range(1, len(layers)):
     param_winc[l_idx]['w'] = np.zeros(param_winc[l_idx]['w'].shape)
     param_winc[l_idx]['b'] = np.zeros(param_winc[l_idx]['b'].shape)
@@ -115,6 +112,9 @@ def main():
   # learning iterations
   indices = range(m_train)
   random.shuffle(indices)
+
+  print("Training Started. Printing report on training data every " + str(display_interval) + " steps.")
+  print("Printing report on test data every " + str(test_interval) + " steps.")
   for step in range(max_iter):
     # get mini-batch and setup the cnn with the mini-batch
     start_idx = step * batch_size % m_train
@@ -127,7 +127,7 @@ def main():
     [cp, param_grad] = cnn_lenet.conv_net(params,
                                           layers,
                                           xtrain[:, idx],
-                                          ytrain[idx])
+                                          ytrain[idx], True)
 
     # we have different epsilons for w and b
     w_rate = cnn_lenet.get_lr(step, epsilon*w_lr, gamma, power)
@@ -147,7 +147,7 @@ def main():
     # display test accuracy
     if (step+1) % test_interval == 0:
       layers[1]['batch_size'] = xtest.shape[1]
-      cptest, _ = cnn_lenet.conv_net(params, layers, xtest, ytest)
+      cptest, _ = cnn_lenet.conv_net(params, layers, xtest, ytest, False)
       layers[1]['batch_size'] = 64
       print '\ncost = %f test_accuracy = %f' % (cptest['cost'], cptest['percent']) + ' current_step = ' + str(step + 1) + '\n'
 
