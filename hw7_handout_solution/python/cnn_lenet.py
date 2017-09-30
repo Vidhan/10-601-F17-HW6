@@ -142,6 +142,7 @@ def conv_net(params, layers, data, labels):
     layers: a dictionary that defines LeNet
     data: input data with shape (784, batch size)
     labels: label with shape (batch size,)
+    doBackProp: enables backprop when set to True
 
   Returns:
     param_grad: gradients
